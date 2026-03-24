@@ -1,0 +1,59 @@
+import sqlite3
+import streamlit as st
+
+def initiera_databas():
+    conn = sqlite3.connect("badplatser.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS badplatser (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            namn TEXT,
+            kommun TEXT,
+            lat REAL,
+            lon REAL,
+            temp REAL,
+            vind REAL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+def spara_till_databas(data_lista):
+    conn = sqlite3.connect("badplatser.db")
+    cursor = conn.cursor()
+    for item in data_lista:
+        cursor.execute("""
+            INSERT INTO badplatser (namn, kommun, lat, lon, temp, vind)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (item["Badplats"], item["Kommun"], item["lat"], item["lon"],
+              item["Temperatur (C)"], item["Vind (m/s)"]))
+    conn.commit()
+    conn.close()
+
+def visa_systemkarta():
+    karta = """
++----------------+        GET JSON         +------------------+
+|  Python App    |----------------------->|  Badplats-API    |
+|                |                        | (HaV)            |
+|  - Start       |                        |                  |
+|  - Filtrera    |<-----------------------| JSON: namn,      |
+|    badplatser  |                        | kommun, coords   |
++----------------+                        +------------------+
+        |
+        | Koordinater (lat/lon)
+        v
++----------------+        GET JSON         +------------------+
+| Python App     |----------------------->|  Open-Meteo API  |
+| - Hämta väder  |                        |                  |
+| - Tolka JSON   |<-----------------------| JSON: temp, vind |
++----------------+                        +------------------+
+        |
+        v
++----------------+
+| Streamlit UI   |
+| - Tabell       |
+| - Karta        |
++----------------+
+    """
+    st.code(karta, language=None)
