@@ -1,8 +1,6 @@
-import os
 import time
 import requests
 import streamlit as st
-import logging
 
 badplatser_base = "https://badplatsen.havochvatten.se/badplatsen/api/feature/"
 
@@ -77,24 +75,3 @@ def hamta_vader(lat, lon):
                 return None, None
         except ValueError:
             return None, None
-
-def markera_som_favorit(badplats_namn):
-    token = os.getenv("API_TOKEN")
-    url = "https://jsonplaceholder.typicode.com/posts"
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "title": "Favoritbadplats",
-        "body": f"Badplatsen {badplats_namn} har markerats som favorit.",
-        "userId": 1
-    }
-    try:
-        response = requests.post(url, json=payload, headers=headers, timeout=5)
-        response.raise_for_status()
-        logging.info(f"Favorit sparad: {badplats_namn}")
-        return True
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Kunde inte spara {badplats_namn}. Fel: {e}")
-        return False
