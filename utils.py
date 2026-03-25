@@ -30,3 +30,7 @@ def spara_till_databas(data_lista):
               item["Temperatur (C)"], item["Vind (m/s)"]))
     conn.commit()
     conn.close()
+
+def hamta_kommuner(badplatser):
+    kommuner = sorted(set(bad["kommun"] for bad in badplatser if bad["kommun"]))
+    return ["Alla kommuner"] + kommuner
