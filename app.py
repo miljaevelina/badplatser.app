@@ -1,6 +1,6 @@
 import logging
 
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 import pandas as pd
 import streamlit as st
 
@@ -16,28 +16,32 @@ logging.basicConfig(
 )
 
 st.title("Vädret över badplatser i Sverige")
-st.write("Välj en eller flera kommuner för att se aktuellt väder.")
+st.write("Välj en eller flera badplatser för att se aktuellt väder.")
 
 initiera_databas()
 
-kommuner_val = st.multiselect(
+alla_badplatser = hamta_badplatser()
+
+badplats_val = st.multiselect(
     " ",
-    options=["Eslöv", "Osby", "Malmö", "Lund", "Helsingborg"],
-    placeholder="Välj kommun"
+    options=sorted([bad["namn"] for bad in alla_badplatser if bad["namn"]]),
+    placeholder="Välj badplats"
 )
 
 if st.button("Hämta badplatser och väder"):
-    if not kommuner_val:
-        st.warning("Välj minst en kommun.")
+    if not badplats_val:
+        st.warning("Välj minst en badplats.")
     else:
         with st.spinner("Hämtar data från API:erna..."):
-            badplatser = hamta_badplatser(kommuner_val)
+            valda_badplatser = [
+                bad for bad in alla_badplatser if bad["namn"] in badplats_val
+            ]
 
-            if not badplatser:
-                st.warning("Inga badplatser hittades för valda kommuner.")
+            if not valda_badplatser:
+                st.warning("Inga badplatser hittades.")
             else:
                 rader = []
-                for bad in badplatser:
+                for bad in valda_badplatser:
                     lon, lat = bad["koordinater"]
                     temp, vind = hamta_vader(lat, lon)
                     rader.append({
