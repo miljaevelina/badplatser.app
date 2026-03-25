@@ -5,10 +5,7 @@ import streamlit as st
 badplatser_base = "https://badplatsen.havochvatten.se/badplatsen/api/feature/"
 
 MIN_INTERVALL = 0.3
-senaste_anrop = {
-    "badplatser": 0,
-    "vader": 0
-}
+senaste_anrop = {"badplatser": 0, "vader": 0, "detaljer": 0}
 
 def rate_limit(api_namn):
     nu = time.time()
@@ -19,59 +16,48 @@ def rate_limit(api_namn):
 
 @st.cache_data(ttl=3600)
 def hamta_badplatser():
-    for forsok in range(3):
-        try:
-            rate_limit("badplatser")
-            response = requests.get(badplatser_base, timeout=10)
-            response.raise_for_status()
-            data = response.json()
-            features = data.get("features", [])
-
-            badplatser = []
-            for item in features:
-                properties = item.get("properties", {})
-                namn = properties.get("NAMN")
-                kommun = properties.get("KMN_NAMN")
-                geometry = item.get("geometry")
-
-                if geometry is None:
-                    continue
-                coords = geometry.get("coordinates")
-                if coords is None or len(coords) < 2:
-                    continue
-
+    try:
+        rate_limit("badplatser")
+        response = requests.get(badplatser_base, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        
+        badplatser = []
+        for item in data.get("features", []):
+            props = item.get("properties", {})
+            geo = item.get("geometry")
+            if geo and geo.get("coordinates"):
                 badplatser.append({
-                    "namn": namn,
-                    "kommun": kommun,
-                    "koordinater": coords
+                    "namn": props.get("NAMN"),
+                    "kommun": props.get("KMN_NAMN"),
+                    "koordinater": geo.get("coordinates"),
+                    "id": props.get("NUTS_CODE")
                 })
-            return badplatser
-        except requests.exceptions.RequestException:
-            if forsok < 2:
-                time.sleep(2)
-            else:
-                st.error("Badplats-API svarar inte just nu.")
-                return []
-        except ValueError:
-            st.error("Svar från Badplats-API kunde inte tolkas.")
-            return []
+        return badplatser
+    except:
+        return []
 
 @st.cache_data(ttl=600)
 def hamta_vader(lat, lon):
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
-    for forsok in range(3):
-        try:
-            rate_limit("vader")
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-            data = response.json()
-            temp = data["current_weather"]["temperature"]
-            vind = data["current_weather"]["windspeed"]
-            return temp, vind
-        except requests.exceptions.RequestException:
-            if forsok < 2:
-                time.sleep(2)
-            else:
-                return None, None
-        except ValueError:
-            return None, None
+    try:
+        rate_limit("vader")
+        data = requests.get(url, timeout=10).json()
+        return data["current_weather"]["temperature"], data["current_weather"]["windspeed"]
+    except:
+        return None, None
+
+@st.cache_data(ttl=3600)
+def hamta_vattentemp(nuts_code):
+    if not nuts_code: return None
+    url = f"https://badplatsen.havochvatten.se/badplatsen/api/detail/{nuts_code}"
+    try:
+        rate_limit("detaljer")
+        data = requests.get(url, timeout=10).json()
+        # Hämtar senaste vattentemperaturen från listan om den finns
+        coper = data.get("coperSmhiList", [])
+        if coper:
+            return coper[0].get("temperature")
+        return None
+    except:
+        return None
