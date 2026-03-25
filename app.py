@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 
 from data_service import hamta_badplatser, hamta_vader, markera_som_favorit
-from utils import initiera_databas, spara_till_databas, visa_systemkarta
+from utils import initiera_databas, spara_till_databas
 
 load_dotenv()
 
