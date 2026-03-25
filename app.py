@@ -53,8 +53,8 @@ if st.button("Hämta badplatser och väder"):
                 vatten_temp = hamta_vattentemp(bad["id"])
                 
                 rader.append({
-                    "Badplats": bad["namn"],
                     "Kommun": bad["kommun"],
+                    "Badplats": bad["namn"],
                     "Temperatur (C)": temp,
                     "Vatten (C)": vatten_temp,
                     "Vind (m/s)": vind,
@@ -69,7 +69,7 @@ if st.button("Hämta badplatser och väder"):
 
             st.subheader("Översikt")
             st.dataframe(
-                df[["Badplats", "Kommun", "Temperatur (C)", "Vatten (C)", "Vind (m/s)"]],
+                df[["Badplats", "Kommun", "Temperatur (C)", "Vatten (C)", "Vind (m/s)"]].reset_index(drop=True),
                 use_container_width=True
             )
 
