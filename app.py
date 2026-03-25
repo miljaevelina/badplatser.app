@@ -64,10 +64,5 @@ if st.button("Hämta badplatser och väder"):
                     use_container_width=True
                 )
 
-                for index, row in df.iterrows():
-                    with st.expander(f"Detaljer: {row['Badplats']}"):
-                        st.write(f"Kommun: {row['Kommun']}")
-                        st.write(f"Temperatur: {row['Temperatur (C)']} °C")
-
                 st.subheader("Karta över badplatser")
                 st.map(df[["lat", "lon"]])
