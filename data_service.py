@@ -98,4 +98,4 @@ def markera_som_favorit(badplats_namn):
         return True
     except requests.exceptions.RequestException as e:
         logging.error(f"Kunde inte spara {badplats_namn}. Fel: {e}")
-        return False       
+        return False    
