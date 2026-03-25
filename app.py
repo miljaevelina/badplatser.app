@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import streamlit as st
 
-from data_service import hamta_badplatser, hamta_vader, markera_som_favorit
+from data_service import hamta_badplatser, hamta_vader
 from utils import initiera_databas, spara_till_databas
 
 load_dotenv()
@@ -68,12 +68,6 @@ if st.button("Hämta badplatser och väder"):
                     with st.expander(f"Detaljer: {row['Badplats']}"):
                         st.write(f"Kommun: {row['Kommun']}")
                         st.write(f"Temperatur: {row['Temperatur (C)']} °C")
-
-                        if st.button(f"Spara {row['Badplats']} som favorit", key=f"fav_{index}"):
-                            if markera_som_favorit(row["Badplats"]):
-                                st.toast(f"{row['Badplats']} har sparats som favorit!")
-                            else:
-                                st.error("Kunde inte spara favoriten.")
 
                 st.subheader("Karta över badplatser")
                 st.map(df[["lat", "lon"]])
