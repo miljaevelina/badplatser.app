@@ -15,8 +15,8 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-st.title("Vädret och vattentemp")
-st.write("Välj en eller flera badplatser för att se aktuellt väder och vattentemperatur.")
+st.title("Vädret över badplatser i Sverige")
+st.write("Välj en eller flera badplatser för att se aktuellt väder.")
 
 initiera_databas()
 
