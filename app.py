@@ -1,6 +1,6 @@
 import logging
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv 
 import pandas as pd
 import streamlit as st
 
@@ -15,15 +15,15 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-st.title("Badplatser och väder i Skåne")
+st.title("Vädret över badplatser i Skåne")
 st.write("Välj en eller flera kommuner för att se aktuellt väder över badplatser.")
 
 initiera_databas()
 
 kommuner_val = st.multiselect(
-    "Välj kommuner",
+    " ",
     options=["Eslöv", "Osby", "Malmö", "Lund", "Helsingborg"],
-    default=["Eslöv", "Osby"]
+    placeholder="Välj kommun"
 )
 
 if st.button("Hämta badplatser och väder"):
