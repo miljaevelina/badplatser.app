@@ -20,7 +20,7 @@ def rate_limit(api_namn):
     senaste_anrop[api_namn] = time.time()
 
 @st.cache_data(ttl=3600)
-def hamta_badplatser(kommuner):
+def hamta_badplatser():
     for forsok in range(3):
         try:
             rate_limit("badplatser")
@@ -28,26 +28,25 @@ def hamta_badplatser(kommuner):
             response.raise_for_status()
             data = response.json()
             features = data.get("features", [])
-            
+
             badplatser = []
             for item in features:
                 properties = item.get("properties", {})
                 namn = properties.get("NAMN")
                 kommun = properties.get("KMN_NAMN")
                 geometry = item.get("geometry")
-                
+
                 if geometry is None:
                     continue
                 coords = geometry.get("coordinates")
-                if coords is None:
+                if coords is None or len(coords) < 2:
                     continue
-                
-                if kommun in kommuner:
-                    badplatser.append({
-                        "namn": namn,
-                        "kommun": kommun,
-                        "koordinater": coords
-                    })
+
+                badplatser.append({
+                    "namn": namn,
+                    "kommun": kommun,
+                    "koordinater": coords
+                })
             return badplatser
         except requests.exceptions.RequestException:
             if forsok < 2:
@@ -98,4 +97,4 @@ def markera_som_favorit(badplats_namn):
         return True
     except requests.exceptions.RequestException as e:
         logging.error(f"Kunde inte spara {badplats_namn}. Fel: {e}")
-        return False    
+        return False
