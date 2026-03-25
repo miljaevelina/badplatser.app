@@ -95,7 +95,9 @@ if st.button("Hämta badplatser och väder"):
                         data=df,
                         get_position='[lon, lat]',
                         get_fill_color='[255, 0, 0]',
-                        get_radius=2000,
+                        get_radius=10,        # Ändra till ett litet värde
+                        radius_min_pixels=5,  # Minsta storlek i pixlar
+                        radius_max_pixels=10, # Maxstorlek i pixlar
                         pickable=True
                     )
 
