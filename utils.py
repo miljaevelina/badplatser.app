@@ -30,36 +30,3 @@ def spara_till_databas(data_lista):
               item["Temperatur (C)"], item["Vind (m/s)"]))
     conn.commit()
     conn.close()
-
-def visa_systemkarta():
-    karta = """
-+----------------+      GET JSON      +------------------+
-|  Python App    |------------------>|  Badplats-API    |
-|  - Filtrera    |<------------------| JSON: namn,      |
-|    badplatser  |                   | kommun, coords   |
-+----------------+                   +------------------+
-        |
-        | Koordinater (lat/lon)
-        v
-+----------------+      GET JSON      +------------------+
-| Python App     |------------------>|  Open-Meteo API  |
-| - Hämta väder  |<------------------| JSON: temp, vind |
-+----------------+                   +------------------+
-        |
-        | Spara data
-        v
-+----------------+
-|  SQLite DB     |
-|  badplatser.db |
-+----------------+
-        |
-        | Läs/visa
-        v
-+----------------+      POST JSON     +--------------------+
-| Streamlit UI   |------------------>|  Favorit-API       |
-| - Tabell       |<------------------| (jsonplaceholder)  |
-| - Karta        |                   |  Svar: OK/Fel      |
-| - Favorit-knapp|                   +--------------------+
-+----------------+
-    """
-    st.code(karta, language=None)
