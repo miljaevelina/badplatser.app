@@ -73,7 +73,3 @@ if st.button("Hämta badplatser och väder"):
 
                 st.subheader("Karta över badplatser")
                 st.map(df[["lat", "lon"]])
-
-if st.checkbox("Visa systemkarta"):
-    st.subheader("Systemkarta - dataflöde")
-    visa_systemkarta()
