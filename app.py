@@ -22,9 +22,19 @@ initiera_databas()
 
 alla_badplatser = hamta_badplatser()
 
+kommuner = hamta_kommuner(alla_badplatser)
+vald_kommun = st.selectbox("Välj stad/kommun", kommuner)
+
+if vald_kommun == "Alla kommuner":
+    filtrerade_badplatser = alla_badplatser
+else:
+    filtrerade_badplatser = [
+        bad for bad in alla_badplatser if bad["kommun"] == vald_kommun
+    ]
+
 badplats_val = st.multiselect(
     " ",
-    options=sorted([bad["namn"] for bad in alla_badplatser if bad["namn"]]),
+    options=sorted([bad["namn"] for bad in filtrerade_badplatser if bad["namn"]]),
     placeholder="Välj badplats"
 )
 
