@@ -65,7 +65,7 @@ if st.button("Hämta badplatser och väder"):
             df = pd.DataFrame(rader)
             spara_till_databas(rader)
 
-            st.success(f"Hittade {len(df)} badplatser.")
+            st.success(f" {len(df)} badplatser hittades.")
 
             st.subheader("Översikt")
             st.dataframe(
