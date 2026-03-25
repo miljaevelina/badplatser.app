@@ -68,10 +68,14 @@ if st.button("Hämta badplatser och väder"):
             st.success(f" {len(df)} badplatser hittades.")
 
             st.subheader("Översikt")
-            st.dataframe(
-                df[["Badplats", "Kommun", "Temperatur (C)", "Vatten (C)", "Vind (m/s)"]].reset_index(drop=True),
-                use_container_width=True
-            )
+
+            df_visning = df[["Badplats", 
+                             "Kommun", 
+                             "Temperatur (C)", 
+                             "Vatten (C)", 
+                             "Vind (m/s)"
+            ]]
+            st.dataframe(df_visning, use_container_width=True, hide_index=True)
 
             st.subheader("Karta över badplatser")
             if df.empty:
