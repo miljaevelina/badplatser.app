@@ -75,40 +75,39 @@ if st.button("Hämta badplatser och väder"):
                     use_container_width=True
                 )
 
-               st.subheader("Karta över badplatser")
+                st.subheader("Karta över badplatser")
 
-if df.empty:
-    st.info("Ingen data att visa på kartan.")
-else:
-    center_lat = df["lat"].mean()
-    center_lon = df["lon"].mean()
+                if df.empty:
+                    st.info("Ingen data att visa på kartan.")
+                else:
+                    center_lat = df["lat"].mean()
+                    center_lon = df["lon"].mean()
 
-    view_state = pdk.ViewState(
-        latitude=center_lat,
-        longitude=center_lon,
-        zoom=6,
-        pitch=0
-    )
+                    view_state = pdk.ViewState(
+                        latitude=center_lat,
+                        longitude=center_lon,
+                        zoom=6,
+                        pitch=0
+                    )
 
-    scatter = pdk.Layer(
-        "ScatterplotLayer",
-        data=df,
-        get_position='[lon, lat]',
-        get_fill_color='[255, 0, 0]',  # röd punkt
-        get_radius=2000,
-        pickable=True
-    )
+                    scatter = pdk.Layer(
+                        "ScatterplotLayer",
+                        data=df,
+                        get_position='[lon, lat]',
+                        get_fill_color='[255, 0, 0]',
+                        get_radius=2000,
+                        pickable=True
+                    )
 
-    # En enkel tooltip som visar badplatsens namn och kommun
-    tooltip = {
-        "html": "<b>{Badplats}</b><br>Kommun: {Kommun}",
-        "style": {"backgroundColor": "black", "color": "white"}
-    }
+                    tooltip = {
+                        "html": "<b>{Badplats}</b><br>Kommun: {Kommun}",
+                        "style": {"backgroundColor": "black", "color": "white"}
+                    }
 
-    deck = pdk.Deck(
-        layers=[scatter],
-        initial_view_state=view_state,
-        tooltip=tooltip
-    )
+                    deck = pdk.Deck(
+                        layers=[scatter],
+                        initial_view_state=view_state,
+                        tooltip=tooltip
+                    )
 
-    st.pydeck_chart(deck)
+                    st.pydeck_chart(deck)
